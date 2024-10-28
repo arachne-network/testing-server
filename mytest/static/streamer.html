@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<!--
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
+<html>
+  <head>
+    <title>Peer connection</title>
+  </head>
+
+  <body>
+    <button id="start" onclick="start()">start</button>
+    <button id="connect" onclick="connect()">connect</button>
+    <video id="localVideo" playsinline autoplay muted width="250"></video>
+    <button id="checkSenders" onclick="checkStats()">checkStats</button>
+    <button id="getVideo" onclick="getVideo()">getVideo</button>
+    <video id="remoteVideo" playsinline autoplay muted width="250"></video>
+    
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const randomId = Math.random().toString(36).substr(2, 11);
+      socket.emit("startStream", randomId);
+
+      const config = {
+        iceServers: [{ urls: "stun:stun.mystunserver.tld" }],
+      };
+      const pc = new RTCPeerConnection(config);
+      const pc2 = new RTCPeerConnection(config);
+      let localStream;
+
+      async function start() {
+        const startButton = document.getElementById("start");
+        const localVideo = document.getElementById("localVideo");
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: true,
+        });
+
+        for (const track of stream.getTracks()) {
+          pc.addTrack(track, stream);
+        }
+        localVideo.srcObject = stream;
+        localStream = stream;
+      }
+
+      async function connect() {
+        await pc.setLocalDescription();
+        const offer = pc.localDescription;
+        socket.emit("sendOffer", {offer:offer});
+      }
+
+      socket.on("makeOffer", async (msg) => {
+        await pc.setLocalDescription();
+        const newMsg = {
+          sender: msg.sender,
+          receiver: msg.receiver,
+          sdp: pc.localDescription,
+        };
+        console.log("new connection from " + msg.sender + " to " + msg.receiver);
+        socket.emit("getOffer", newMsg);
+      });
+
+      socket.on("setAnswer", async (msg) => {
+        await pc.setRemoteDescription(msg.sdp);
+      });
+
+      socket.on("setCandidate", async (msg) => {
+        
+        if(msg.candidate != null) await pc.addIceCandidate(msg.candidate);
+      });
+
+      pc2.onicecandidate = (e) => {
+        console.log(e.candidate);
+        socket.emit("sendCandidate", {candidate: e.candidate});
+      }
+
+      pc2.addEventListener("track", (e) => {
+        console.log(e);
+        const remoteVideo = document.getElementById("remoteVideo");
+        remoteVideo.srcObject = e.streams[0];
+      })
+
+      async function checkStats() {
+        socket.emit("checkStats");
+        const stats = await pc.getStats();
+        stats.forEach(stat => {
+          console.log(stat);
+        })
+      }
+
+      function getVideo() {
+        socket.emit("getVideoStart",async (offer) => {
+          await pc2.setRemoteDescription(offer.offer);
+          const answer = await pc2.createAnswer();
+          await pc2.setLocalDescription(answer);
+          socket.emit("getAnswer", {answer: answer});
+        });
+      }
+    </script>
+  </body>
+</html>
