@@ -58,8 +58,8 @@ io.on("connection", (socket) => {
         let streams = e.streams;
         let track = e.track;
         testpeer.addTracks(track, streams);
-        await connects(1000);
-        console.log("finished!!");
+        await connects(10);
+        
     }
     initpc.onicecandidate = (e) => {
         socket.emit("setCandidate", {candidate: e.candidate});
@@ -93,7 +93,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("checkStats", async () => {
-        const stats = await testpeer.sendVideoPeer.getStats();
+        const stats = await finalpeer.getVideoPeer.getStats();
         console.log(stats);
     })
 

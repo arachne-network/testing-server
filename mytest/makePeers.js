@@ -37,10 +37,7 @@ class TestRTCPeerConnection {
         streams.forEach(stream => this.sendVideoPeer.addTrack(track, stream));
     }
 }
-function sleep(ms) {
-    const wakeUpTime = Date.now() + ms;
-    while (Date.now() < wakeUpTime) {}
-}
+
 // peer1이 peer2에게 영상을 보낸다
 async function connectTestPeers(peer1, peer2) {
     peer2.onicecandidate = async (e) => {
@@ -52,7 +49,6 @@ async function connectTestPeers(peer1, peer2) {
     await peer1.setLocalDescription(offer);
     await peer2.setRemoteDescription(offer);
     const answer = await peer2.createAnswer();
-    console.log("answer is " + JSON.stringify(answer));
     await peer2.setLocalDescription(answer);
     await peer1.setRemoteDescription(answer);
     
