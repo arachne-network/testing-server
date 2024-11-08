@@ -21,7 +21,9 @@ build-* 파일 내에 있는 webrtc api를 수정했고 반영하고 싶으면 �
 ## 파일 구성
 
 ./build-*/external/libwebrtc/download/src : webrtc api입니다.
+
 ./src: webrtc api를 addon을 이용해 javascript로 사용할 수 있게 하는 코드입니다.
+
 ./mytest: ./src에서 생성된 api를 이용해 각 peer의 상태를 확인하는 code입니다.
 
 
