@@ -3,7 +3,7 @@
   <img height="120px" src="https://webrtc.github.io/webrtc-org/assets/images/webrtc-logo-vert-retro-dist.svg">
 </h1>
 
-해당 프로젝트는 node-webrtc(https://github.com/node-webrtc/node-webrtc)를 통해 webrtc peer 성능 및 packet을 확인할 수 있는 프로젝트입니다.
+해당 프로젝트는 node-webrtc( https://github.com/node-webrtc/node-webrtc )를 통해 webrtc peer 성능 및 packet을 확인할 수 있는 프로젝트입니다.
 
 ## 실행 환경
 node-webrtc의 supported platforms를 참고하면 됩니다.
