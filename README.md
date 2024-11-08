@@ -3,72 +3,26 @@
   <img height="120px" src="https://webrtc.github.io/webrtc-org/assets/images/webrtc-logo-vert-retro-dist.svg">
 </h1>
 
-[![NPM](https://img.shields.io/npm/v/@roamhq/wrtc.svg)](https://www.npmjs.com/package/@roamhq/wrtc)
+해당 프로젝트는 node-webrtc(https://github.com/node-webrtc/node-webrtc)를 통해 webrtc peer 성능 및 packet을 확인할 수 있는 프로젝트입니다.
 
-node-webrtc is a Node.js Native Addon that provides bindings to [WebRTC
-M98](https://webrtc.googlesource.com/src/+/branch-heads/4758). This project is
-aiming for spec-compliance and will eventually be tested using the W3C's
-[web-platform-tests](https://github.com/web-platform-tests/wpt) project. A
-number of [nonstandard APIs](docs/nonstandard-apis.md) for testing are also
-included.
+## 실행 환경
+node-webrtc의 supported platforms를 참고하면 됩니다.
 
 ## Install
+설치는 docs/build-from-source.md 를 참고하면 됩니다.
 
-```
-npm install @roamhq/wrtc
-```
+## 실행 방법
+build-* 파일 내에 있는 webrtc api를 수정했고 반영하고 싶으면 다음 단계를 실행해야 합니다.
+1. 환경변수 DEBUG=true 로 설정합니다
+2. npm run build를 실행합니다. 이 때, 에러가 발생할 수 있는 데 무시해도 됩니다.
+3. scripts/build-from-source.js 에서 if(process.env.DEBUG) {...} 부분을 주석처리 합니다.
+4. npm run build를 다시 실행합니다.
 
-Installing from NPM downloads a prebuilt binary for your operating system ×
-architecture, based on optional dependency filters.
+## 파일 구성
 
-To install a debug build or cross-compile, you should [build from
-source](docs/build-from-source.md).
+./build-*/external/libwebrtc/download/src : webrtc api입니다.
+./src: webrtc api를 addon을 이용해 javascript로 사용할 수 있게 하는 코드입니다.
+./mytest: ./src에서 생성된 api를 이용해 각 peer의 상태를 확인하는 code입니다.
 
-## Supported Platforms
 
-The following platforms are confirmed to work with node-webrtc and have
-prebuilt binaries available. Since node-webrtc targets [N-API version
-3](https://nodejs.org/api/n-api.html), there may be additional platforms
-supported that are not listed here. If your platform is not supported, you may
-still be able to [build from source](docs/build-from-source.md).
 
-<table>
-  <thead>
-    <tr>
-      <td colspan="2" rowspan="2"></td>
-      <th colspan="2">Linux</th>
-      <th colspan="2">macOS</th>
-      <th>Windows</th>
-    </tr>
-    <tr>
-      <th>x64</th>
-      <th>arm64</th>
-      <th>x64</th>
-      <th>arm64</th>
-      <th>x64</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="2">Node</th>
-      <th>18</th>
-      <td align="center">✓</td>
-      <td align="center">?</td>
-      <td align="center">✓</td>
-      <td align="center">✓</td>
-      <td align="center">✓</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td align="center">✓</td>
-      <td align="center">?</td>
-      <td align="center">✓</td>
-      <td align="center">?</td>
-      <td align="center">✓</td>
-    </tr>
-  </tbody>
-</table>
-
-## Examples
-
-See [node-webrtc/node-webrtc-examples](https://github.com/node-webrtc/node-webrtc-examples).
